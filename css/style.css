@@ -1,0 +1,39 @@
+html {
+  margin: 0;
+  padding: 0;
+}
+* {
+  text-decoration: none !important;
+}
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  opacity: 0.6;
+  backdrop-filter: blur(10px);
+}
+.app_name {
+  font-weight: 600;
+  font-size: 2rem;
+  margin-left: 10px;
+  color: #fff !important;
+}
+.btn_theme {
+  border: 1px solid #ddd;
+  margin-right: 10px;
+}
+
+.container {
+  width: 80% !important;
+  margin: 45px auto !important;
+}
+.quotes {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+}
+.quote {
+  transition: 0.3s;
+}
+.quote:hover {
+  transform: scale(1.05);
+}

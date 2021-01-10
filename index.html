@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quotable</title>
+    <!-- Halfmoon CSS -->
+<link href="https://cdn.jsdelivr.net/npm/halfmoon@1.1.1/css/halfmoon-variables.min.css" rel="stylesheet" />
+<link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'>
+<link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+    
+    <!--Navigation-->
+    <nav class="navbar navbar-fixed-top">
+        <!-- Navbar content (with toggle sidebar button) -->
+        <!-- <div class="navbar-content">
+          <button class="btn btn-action" type="button">
+            <i class="fa fa-bars" aria-hidden="true"></i>
+            <span class="sr-only">Toggle sidebar</span>
+          </button>-->
+        </div> 
+        <!-- Navbar brand -->
+        <a href="#" class="navbar-brand">
+          <!-- <img src="..." alt="..."> -->
+          Quotable
+        </a>
+        <!-- Navbar text -->
+        <span class="navbar-text text-monospace">v1.0</span> <!-- text-monospace = font-family shifted to monospace -->
+        <!-- Navbar nav -->
+        <ul class="navbar-nav d-none d-md-flex">
+          <li class="nav-item active">
+            <a href="#" class="nav-link disabled">Home</a>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link">Quote of the Day</a>
+          </li>
+        </ul>
+        <!-- Navbar form (inline form) -->
+        <a href="#" class="btn_theme btn ml-auto"><i class='bx bx-moon'></i></a>
+       
+      </nav>
+      <div class="sticky-alerts"></div>
+    <!--Container-->
+
+    <div class="container">
+        <h3>Quotable</h3>
+        <p>Get Daily Inspiration quotes from various famous authors</p>
+        <div class="quotes">
+   
+        </div>
+    </div>
+
+
+    <!-- Halfmoon JS -->
+<script src="https://cdn.jsdelivr.net/npm/halfmoon@1.1.1/js/halfmoon.min.js"></script>
+<script>
+    let isDark = false;
+    // toggle button
+    const theme_btn = document.querySelectorAll('.btn_theme');
+    Array.from(theme_btn).forEach((btn)=>{
+        btn.addEventListener('click', ()=>{
+        if(!isDark){
+            halfmoon.toggleDarkMode();
+            isDark = true;
+            btn.innerHTML =  `<i class='bx bx-sun' style="color:yellow;"></i>`;
+        }
+        else{
+            isDark = false;
+            halfmoon.toggleDarkMode();
+            btn.innerHTML = `<i class='bx bx-moon'></i>`
+        }
+    })
+    })
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+<script src="https://unpkg.com/boxicons@latest/dist/boxicons.js"></script>
+
+<script>
+    // fetch all quotes
+    const fetchQuotes = async () =>{
+        try{
+            const r = await axios.get('https://quotablelive.herokuapp.com/api/quotes');
+            if(r.status===200){
+                
+                r.data.map((quote)=>{
+                    document.querySelector('.quotes').innerHTML+=`
+                    <div class="w-400 mw-full quote">
+                    <div class="card">
+                    <h2 class="card-title">
+                    ${quote.author}
+                    </h2>
+                    <p class="text-muted">
+                    ${quote.quote}
+                    </p>
+                    <div class="text-right"> <!-- text-right = text-align: right -->
+                    <a href="#" class="btn btn-danger cpy">Copy</a>
+                    </div>
+                </div>
+                </div>`
+                })
+                handleCpy();
+                
+
+            }
+        }
+        catch(e){
+            if(e.response && e.response.data){
+                console.log(e.response.data);
+            }
+        }
+    }
+    fetchQuotes();
+
+    const handleCpy = () =>{
+        const btns = document.querySelectorAll('.cpy');
+        Array.from(btns).forEach((btn)=>{
+            btn.addEventListener('click', (e)=>{
+                
+                navigator.clipboard.writeText(`${e.target.parentNode.parentNode.children[1].textContent.trim()} by ${e.target.parentNode.parentNode.children[0].textContent.trim()}`).
+                then(()=>{
+                    toastAlert('Success','Quote copied successfully!');
+                })
+                
+                .catch((e)=>console.log(e.message))
+            })
+        })
+    }
+
+    function toastAlert(title,content) {
+    var alertContent = "This is a default alert with <a href='#' class='alert-link'>a link</a> being toasted.";
+    // Built-in function
+    halfmoon.initStickyAlert({
+      content: content,      // Required, main content of the alert, type: string (can contain HTML)
+      title:title  ,
+      alertType: "alert-success",    // Optional, title of the alert, default: "", type: string
+    })
+  }
+</script>
+</body>
+</html>
